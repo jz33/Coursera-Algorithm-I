@@ -3,7 +3,7 @@ import edu.princeton.cs.algs4.StdStats;
 
 import static java.lang.System.out;
 
-public class PercolationStates {
+public class PercolationStats {
 
     boolean DEBUG = false;
     int N; // matrix dimesion
@@ -59,7 +59,7 @@ public class PercolationStates {
         }
     }
     
-    public PercolationStates(int N, int T) {
+    public PercolationStats(int N, int T) {
         this.N = N;
         this.T = T;
         fractions = new double[T];
@@ -68,7 +68,7 @@ public class PercolationStates {
     }
 
     // Test
-    public PercolationStates(){
+    public PercolationStats(){
         N = 3;
         Percolation node = new Percolation(N);
 
@@ -84,9 +84,9 @@ public class PercolationStates {
         if(args.length >= 2){
             int N = Integer.parseInt(args[0]);
             int T = Integer.parseInt(args[1]);
-            new PercolationStates(N,T);
+            new PercolationStats(N,T);
         } else {
-            new PercolationStates();
+            new PercolationStats();
         }   
     }
 }
