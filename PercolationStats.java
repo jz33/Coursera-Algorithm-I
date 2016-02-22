@@ -1,64 +1,67 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-
-import static java.lang.System.out;
+import edu.princeton.cs.algs4.StdOut;
 
 public class PercolationStats {
 
-    boolean DEBUG = false;
-    int N; // matrix dimesion
-    int T; // simulation times
-    double[] fractions; // 
+    private boolean DEBUG = false;
+    private int N; // matrix dimesion
+    private int T; // simulation times
+    private double[] fractions; //
 
-    public double mean(){
+    public double mean() {
         return StdStats.mean(fractions);
     }
-    
-    protected double var(){
+
+    private double var() {
         return StdStats.var(fractions);
     }
-    
-    public double stddev(){
+
+    public double stddev() {
         return StdStats.stddev(fractions);
     }
-    
-    public double confidenceLo(){
+
+    public double confidenceLo() {
         return mean() - 1.96 * var() / Math.sqrt(T);
     }
-    
-    public double confidenceHi(){
+
+    public double confidenceHi() {
         return mean() + 1.96 * var() / Math.sqrt(T);
     }
-    
-    protected void print(){
-        if(DEBUG){
-            for(int i = 0;i<T;i++){
-                out.print(fractions[i]+ " ");
+
+    private void print() {
+        if (DEBUG) {
+            for (int i = 0; i < T; i++) {
+                StdOut.print(fractions[i] + " ");
             }
-            out.println();
+            StdOut.println();
         }
-        out.format("mean %20s %f\n", "=", mean());
-        out.format("stddev %18s %f\n", "=", stddev());
-        out.format("%s confidence interval %s %f, %f\n", "95%","=",confidenceLo(),confidenceHi());
-        out.println();
+        StdOut.println("mean = " + mean());
+        StdOut.println("stddev =" + stddev());
+        StdOut.println("95%s confidence interval = " + confidenceLo() + ", "
+                + confidenceHi());
+        StdOut.println();
     }
 
-    protected void simulate(){
+    private void simulate() {
         int bound = N * N;
-        Percolation node = new Percolation(N);
-        for(int i = 0;i<T;i++){
-            while(!node.percolates()){
-                int rand = StdRandom.uniform(0,bound);
-                int row = (int)(rand / N) + 1;
-                int col = (int)(rand % N) + 1;
-                node.open(row,col);
+        for (int i = 0; i < T; i++) {
+            Percolation node = new Percolation(N);
+            int opened = 0;
+            while (!node.percolates()) {
+                int rand = StdRandom.uniform(0, bound);
+                int row = (int) (rand / N) + 1;
+                int col = (int) (rand % N) + 1;
+                if (!node.isOpen(row, col)) {
+                    node.open(row, col);
+                    opened++;
+                }
             }
-            fractions[i] = node.fraction();
-            if(DEBUG) node.print();
-            node.reset();
+            fractions[i] = (double) opened / (double) bound;
+            // if(DEBUG) node.print();
         }
     }
-    
+
     public PercolationStats(int N, int T) {
         this.N = N;
         this.T = T;
@@ -67,26 +70,11 @@ public class PercolationStats {
         print();
     }
 
-    // Test
-    public PercolationStats(){
-        N = 3;
-        Percolation node = new Percolation(N);
-
-        node.open(1,2);
-        node.open(1,3);
-        node.open(3,3);
-        node.open(2,2);
-        node.open(3,2);
-        node.print();
-    }
-    
     public static void main(String[] args) {
-        if(args.length >= 2){
+        if (args.length >= 2) {
             int N = Integer.parseInt(args[0]);
             int T = Integer.parseInt(args[1]);
-            new PercolationStats(N,T);
-        } else {
-            new PercolationStats();
-        }   
+            new PercolationStats(N, T);
+        }
     }
 }
