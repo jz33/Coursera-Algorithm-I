@@ -3,7 +3,9 @@ import edu.princeton.cs.algs4.StdIn;
 
 public class Subset {
 
-    public Subset(int k) {
+    private int k;
+    
+    public Subset() {
         RandomizedQueue<String> rq = new RandomizedQueue<String>();
         while (!StdIn.isEmpty()) {
             rq.enqueue(StdIn.readString().trim());
@@ -14,7 +16,7 @@ public class Subset {
     }
 
     public static void main(String[] args) {
-        int k = Integer.parseInt(args[0]);
-        new Subset(k);
+        k = Integer.parseInt(args[0]);
+        new Subset();
     }
 }
