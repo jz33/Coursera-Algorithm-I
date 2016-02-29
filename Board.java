@@ -98,22 +98,28 @@ public class Board {
     }
 
     public Board twin() {
-        int[][] newBlocks = deepcopy(blocks, dim);
-        int ori = newBlocks[0][0];
+        Board nb = null;
+        int ori = blocks[0][0];
         if (ori != 0) {
             if (dim > 1) {
-                if (newBlocks[0][1] != 0) {
-                    swap(newBlocks, 0, 0, 0, 1);
-                } else if (newBlocks[1][0] != 0) {
-                    swap(newBlocks, 0, 0, 1, 0);
+                if (blocks[0][1] != 0) {
+                    swap(blocks, 0, 0, 0, 1);
+                    nb = new Board(blocks);
+                    swap(blocks, 0, 0, 0, 1);
+                } else if (blocks[1][0] != 0) {
+                    swap(blocks, 0, 0, 1, 0);
+                    nb = new Board(blocks);
+                    swap(blocks, 0, 0, 1, 0);
                 }
             }
         } else {
             if (dim > 1) {
-                swap(newBlocks, 0, 1, 1, 1);
+                swap(blocks, 0, 1, 1, 1);
+                nb = new Board(blocks);
+                swap(blocks, 0, 1, 1, 1);
             }
         }
-        return new Board(newBlocks);
+        return nb;
     }
 
     public boolean equals(Object y) {
@@ -147,24 +153,24 @@ public class Board {
                     int v = blocks[i][j];
                     if (v == 0) {
                         if (i + 1 < dim) {
-                            int[][] newBlocks = deepcopy(blocks, dim);
-                            swap(newBlocks, i, j, i + 1, j);
-                            al.add(new Board(newBlocks));
+                            swap(blocks, i, j, i + 1, j);
+                            al.add(new Board(blocks));
+                            swap(blocks, i, j, i + 1, j);
                         }
                         if (i - 1 > -1) {
-                            int[][] newBlocks = deepcopy(blocks, dim);
-                            swap(newBlocks, i, j, i - 1, j);
-                            al.add(new Board(newBlocks));
+                            swap(blocks, i, j, i - 1, j);
+                            al.add(new Board(blocks));
+                            swap(blocks, i, j, i - 1, j);
                         }
                         if (j + 1 < dim) {
-                            int[][] newBlocks = deepcopy(blocks, dim);
-                            swap(newBlocks, i, j, i, j + 1);
-                            al.add(new Board(newBlocks));
+                            swap(blocks, i, j, i, j + 1);
+                            al.add(new Board(blocks));
+                            swap(blocks, i, j, i, j + 1);
                         }
                         if (j - 1 > -1) {
-                            int[][] newBlocks = deepcopy(blocks, dim);
-                            swap(newBlocks, i, j, i, j - 1);
-                            al.add(new Board(newBlocks));
+                            swap(blocks, i, j, i, j - 1);
+                            al.add(new Board(blocks));
+                            swap(blocks, i, j, i, j - 1);
                         }
                         break loop;
                     }
