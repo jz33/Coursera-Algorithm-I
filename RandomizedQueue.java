@@ -9,7 +9,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] arr;
     private int rt; // point to empty position
 
-    @SuppressWarnings("unchecked")
     public RandomizedQueue() {
         arr = (Item[]) new Object[1];
         rt = 0;
@@ -27,7 +26,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int oldLen = arr.length;
         if (size() >= oldLen) {
             int newLen = oldLen * 2;
-            @SuppressWarnings("unchecked")
+
             Item[] newArr = (Item[]) new Object[newLen];
             System.arraycopy(arr, 0, newArr, 0, size());
             arr = newArr;
@@ -46,7 +45,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int oldLen = arr.length;
         if (size() < oldLen / 4) {
             int newLen = oldLen / 2;
-            @SuppressWarnings("unchecked")
+
             Item[] newArr = (Item[]) new Object[newLen];
             System.arraycopy(arr, 0, newArr, 0, size());
             arr = newArr;
@@ -73,22 +72,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private int[] knuthArray(int size) {
-        int[] arr = new int[size];
+        int[] knuthArr = new int[size];
         for (int i = 1; i < rt; i++) {
-            arr[i] = i;
+            knuthArr[i] = i;
         }
-        StdRandom.shuffle(arr);
-        return arr;
+        StdRandom.shuffle(knuthArr);
+        return knuthArr;
     }
 
     public Iterator<Item> iterator() {
-        return new Iterator<Item>(){
-            private int[] _ids = knuthArray(size());
-            private int _p = 0;
+        return new Iterator<Item>() {
+            private int[] ids = knuthArray(size());
+            private int pp = 0;
 
             @Override
             public boolean hasNext() {
-                return _p < _ids.length;
+                return pp < ids.length;
             }
 
             public void remove() {
@@ -100,21 +99,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return arr[_ids[_p++]];
+                return arr[ids[pp++]];
             }
         };
-    }
-
-    //
-    // public void state() {
-    // StdOut.println(arr.length + ", " + rt);
-    // for (int i = 0; i < arr.length; i++) {
-    // StdOut.print(arr[i] + " ");
-    // }
-    // StdOut.println();
-    // }
-
-    public static void main(String[] args) {
-        new RandomizedQueue<Integer>();
     }
 }

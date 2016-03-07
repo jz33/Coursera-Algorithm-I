@@ -1,8 +1,7 @@
 import edu.princeton.cs.algs4.StdOut;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-/**
+/*
  * http://coursera.cs.princeton.edu/algs4/assignments/queues.html
  */
 public class Deque<Item> implements Iterable<Item> {
@@ -12,7 +11,6 @@ public class Deque<Item> implements Iterable<Item> {
     private int left; // exclusively, i.e, a valid empty space
     private int right;
 
-    @SuppressWarnings("unchecked")
     public Deque() {
         arr = (Item[]) new Object[2];
         left = 0;
@@ -34,7 +32,7 @@ public class Deque<Item> implements Iterable<Item> {
         int diff = 0;
         if (size() >= (int) (0.75 * arr.length)) {
             int newSize = arr.length * 2;
-            @SuppressWarnings("unchecked")
+            
             Item[] newArr = (Item[]) new Object[newSize];
             diff = ((newSize - 1) >> 1) - ((left + right) >> 1);
             System.arraycopy(arr, left + 1, newArr, left + 1 + diff, size());
@@ -83,7 +81,7 @@ public class Deque<Item> implements Iterable<Item> {
     private void shrinkIfPossible() {
         if (size() < (int) (arr.length / 4)) {
             int newSize = arr.length / 2;
-            @SuppressWarnings("unchecked")
+            
             Item[] newArr = (Item[]) new Object[newSize];
             int diff = (newSize >> 1) - ((left + right) >> 1);
             for (int i = left + 1; i < right; i++) {
@@ -139,19 +137,5 @@ public class Deque<Item> implements Iterable<Item> {
                 return (Item) arr[i++];
             }
         };
-    }
-
-    // public void state() {
-    //     StdOut.print(arr.length + ": ");
-    //     for (int i = 0; i < arr.length; i++) {
-    //         StdOut.print(arr[i] + " ");
-    //     }
-    //     StdOut.println();
-    //     StdOut.println(left + " " + right);
-    //     StdOut.println();
-    // }
-
-    public static void main(String[] args) {
-        new Deque<Integer>();
     }
 }
