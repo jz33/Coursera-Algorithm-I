@@ -1,10 +1,23 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
+/*
+ * http://coursera.cs.princeton.edu/algs4/assignments/8puzzle.html
+ */
 public class Board {
+
+    private class Point {
+        private int x;
+        private int y;
+
+        private Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 
     private int dim;
     private int[][] blocks;
+    private Point empty;
 
     public Board(int[][] blocks) {
         if (illegalBlocks(blocks)) {
@@ -15,10 +28,30 @@ public class Board {
             throw new NullPointerException();
         }
         this.blocks = deepcopy(blocks, dim);
+
+        loop: {
+            for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < dim; j++) {
+                    if (blocks[i][j] == 0) {
+                        empty = new Point(i, j);
+                        break loop;
+                    }
+                }
+            }
+        }
     }
 
-    private boolean illegalBlocks(int[][] blocks) {
-        return blocks == null || blocks.length == 0 || blocks[0].length == 0;
+    private Board(int[][] blocks, Point empty) {
+        if (illegalBlocks(blocks)) {
+            throw new NullPointerException();
+        }
+        dim = blocks.length;
+        this.blocks = deepcopy(blocks, dim);
+        this.empty = empty;
+    }
+
+    private boolean illegalBlocks(int[][] anyBlocks) {
+        return anyBlocks == null || anyBlocks.length == 0 || anyBlocks[0].length == 0;
     }
 
     public int dimension() {
@@ -62,20 +95,21 @@ public class Board {
     }
 
     public boolean isGoal() {
+        if (empty.x != dim - 1 || empty.y != dim - 1)
+            return false;
+
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                int v = blocks[i][j] - 1;
-                if (v == -1) {
+                int v = blocks[i][j];
+                if (v == 0) {
                     return i == dim - 1 && j == dim - 1;
                 } else {
-                    int s = v / dim; // supposed i
-                    if (s != i) {
+                    int s = (v - 1) / dim; // supposed i
+                    if (s != i)
                         return false;
-                    }
-                    s = v % dim;
-                    if (s != j) {
+                    s = (v - 1) % dim;
+                    if (s != j)
                         return false;
-                    }
                 }
             }
         }
@@ -88,11 +122,11 @@ public class Board {
         mat[ti][tj] = t;
     }
 
-    private int[][] deepcopy(int[][] blocks, int dim) {
-        int[][] newBlocks = new int[dim][];
-        for (int i = 0; i < dim; i++) {
-            newBlocks[i] = new int[dim];
-            System.arraycopy(blocks[i], 0, newBlocks[i], 0, dim);
+    private int[][] deepcopy(int[][] mat, int size) {
+        int[][] newBlocks = new int[size][];
+        for (int i = 0; i < size; i++) {
+            newBlocks[i] = new int[size];
+            System.arraycopy(mat[i], 0, newBlocks[i], 0, size);
         }
         return newBlocks;
     }
@@ -104,18 +138,18 @@ public class Board {
             if (dim > 1) {
                 if (blocks[0][1] != 0) {
                     swap(blocks, 0, 0, 0, 1);
-                    nb = new Board(blocks);
+                    nb = new Board(blocks, empty);
                     swap(blocks, 0, 0, 0, 1);
                 } else if (blocks[1][0] != 0) {
                     swap(blocks, 0, 0, 1, 0);
-                    nb = new Board(blocks);
+                    nb = new Board(blocks, empty);
                     swap(blocks, 0, 0, 1, 0);
                 }
             }
         } else {
             if (dim > 1) {
                 swap(blocks, 0, 1, 1, 1);
-                nb = new Board(blocks);
+                nb = new Board(blocks, empty);
                 swap(blocks, 0, 1, 1, 1);
             }
         }
@@ -127,7 +161,7 @@ public class Board {
             throw new IllegalArgumentException();
         }
         Board that = (Board) y;
-        if(that.dimension() != dimension()){
+        if (that.dimension() != dimension()) {
             return false;
         }
         int[][] b = that.blocks;
@@ -145,63 +179,31 @@ public class Board {
         return true;
     }
 
-    private ArrayList<Board> getNeighbors() {
-        ArrayList<Board> al = new ArrayList<Board>();
-        loop: {
-            for (int i = 0; i < dim; i++) {
-                for (int j = 0; j < dim; j++) {
-                    int v = blocks[i][j];
-                    if (v == 0) {
-                        if (i + 1 < dim) {
-                            swap(blocks, i, j, i + 1, j);
-                            al.add(new Board(blocks));
-                            swap(blocks, i, j, i + 1, j);
-                        }
-                        if (i - 1 > -1) {
-                            swap(blocks, i, j, i - 1, j);
-                            al.add(new Board(blocks));
-                            swap(blocks, i, j, i - 1, j);
-                        }
-                        if (j + 1 < dim) {
-                            swap(blocks, i, j, i, j + 1);
-                            al.add(new Board(blocks));
-                            swap(blocks, i, j, i, j + 1);
-                        }
-                        if (j - 1 > -1) {
-                            swap(blocks, i, j, i, j - 1);
-                            al.add(new Board(blocks));
-                            swap(blocks, i, j, i, j - 1);
-                        }
-                        break loop;
-                    }
-                }
-            }
-        }
-        return al;
-    }
-
     public Iterable<Board> neighbors() {
-        return new Iterable<Board>() {
-
-            @Override
-            public Iterator<Board> iterator() {
-                return new Iterator<Board>() {
-
-                    private ArrayList<Board> al = getNeighbors();
-                    private int i = 0;
-
-                    @Override
-                    public boolean hasNext() {
-                        return i < al.size();
-                    }
-
-                    @Override
-                    public Board next() {
-                        return al.get(i++);
-                    }
-                };
-            }
-        };
+        ArrayList<Board> arr = new ArrayList<Board>();
+        int i = empty.x;
+        int j = empty.y;
+        if (i + 1 < dim) {
+            swap(blocks, i, j, i + 1, j);
+            arr.add(new Board(blocks, new Point(i + 1, j)));
+            swap(blocks, i, j, i + 1, j);
+        }
+        if (i - 1 > -1) {
+            swap(blocks, i, j, i - 1, j);
+            arr.add(new Board(blocks, new Point(i - 1, j)));
+            swap(blocks, i, j, i - 1, j);
+        }
+        if (j + 1 < dim) {
+            swap(blocks, i, j, i, j + 1);
+            arr.add(new Board(blocks, new Point(i, j + 1)));
+            swap(blocks, i, j, i, j + 1);
+        }
+        if (j - 1 > -1) {
+            swap(blocks, i, j, i, j - 1);
+            arr.add(new Board(blocks, new Point(i, j - 1)));
+            swap(blocks, i, j, i, j - 1);
+        }
+        return arr;
     }
 
     public String toString() {
