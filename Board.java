@@ -157,7 +157,7 @@ public class Board {
     }
 
     public boolean equals(Object y) {
-        if (y == null || !(y instanceof Board)) {
+        if (y == null || !(y.getClass() != Board.class)) {
             throw new IllegalArgumentException();
         }
         Board that = (Board) y;
@@ -211,7 +211,7 @@ public class Board {
         sb.append(dim + "\n");
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                sb.append(String.format("%3d", blocks[i][j]));
+                sb.append(String.format("%2d ", blocks[i][j]));
             }
             sb.append('\n');
         }

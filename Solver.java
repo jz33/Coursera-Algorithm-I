@@ -6,7 +6,7 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
-/**
+/*
  * http://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/MinPQ.html
  */
 public class Solver {
@@ -56,7 +56,11 @@ public class Solver {
     }
 
     public int moves() {
-        return steps.size() == 0 ? -1 : steps.size() - 1;
+        if (steps.size() == 0) {
+            return -1;
+        } else {
+            return steps.size() - 1;
+        }
     }
 
     public Iterable<Board> solution() {
